@@ -28,7 +28,6 @@ GPIO.output(ReversePin, GPIO.LOW)
 
 servo = GPIO.PWM(servoPin, 50)
 servo.start(0)
-
 camera = PiCamera()
 
 return_falg = False
@@ -64,6 +63,25 @@ class button():
             
         return False
 
+class passward_box():
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self,win,outline=None):
+        #Call this method to draw the button on the screen
+           
+        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),2)
+        
+        if self.text != '':
+            font = pygame.font.SysFont('comicsans', 60)
+            text = font.render(self.text, 1, (0,0,0))
+            win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
+
 
 class Intruder(object):
     def __init__(self):
@@ -74,26 +92,26 @@ class Intruder(object):
     def draw(self):
         win.blit(self.image, (self.x, self.y))
 
-
+passward_size = ""
 
 num = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 sampleNumber = random.sample(num, 10)
-Button0 = button((0,255,0), 20, 20, 120, 120,str(sampleNumber[0]))
-Button1 = button((0,255,0), 180, 20, 120, 120,str(sampleNumber[1]))
-Button2 = button((0,255,0), 340, 20, 120, 120,str(sampleNumber[2]))
-Button3 = button((0,255,0), 20, 170, 120, 120,str(sampleNumber[3]))
-Button4 = button((0,255,0), 180, 170, 120, 120,str(sampleNumber[4]))
-Button5 = button((0,255,0), 340, 170, 120, 120,str(sampleNumber[5]))
-Button6 = button((0,255,0), 20, 320, 120, 120,str(sampleNumber[6]))
-Button7 = button((0,255,0), 180, 320, 120, 120,str(sampleNumber[7]))
-Button8 = button((0,255,0), 340, 320, 120, 120,str(sampleNumber[8]))
-Button9 = button((0,255,0), 180, 470, 120, 120,str(sampleNumber[9]))
-Buttonst = button((0,255,0), 20, 470, 120, 120, '*')
-Buttonsh = button((0,255,0), 340, 470, 120, 120, '#')
+Button0 = button((0,255,0), 20, 90, 120, 100,str(sampleNumber[0]))
+Button1 = button((0,255,0), 180, 90, 120, 100,str(sampleNumber[1]))
+Button2 = button((0,255,0), 340, 90, 120, 100,str(sampleNumber[2]))
+Button3 = button((0,255,0), 20, 210, 120, 100,str(sampleNumber[3]))
+Button4 = button((0,255,0), 180, 210, 120, 100,str(sampleNumber[4]))
+Button5 = button((0,255,0), 340, 210, 120, 100,str(sampleNumber[5]))
+Button6 = button((0,255,0), 20, 330, 120, 100,str(sampleNumber[6]))
+Button7 = button((0,255,0), 180, 330, 120, 100,str(sampleNumber[7]))
+Button8 = button((0,255,0), 340, 330, 120, 100,str(sampleNumber[8]))
+Button9 = button((0,255,0), 180, 450, 120, 100,str(sampleNumber[9]))
 
+Buttonst = button((0,255,0), 20, 450, 120, 100, '*')
+Buttonsh = button((0,255,0), 340, 450, 120, 100, '#')
 
-            
+Passward_box = passward_box((0,0,0), 20, 20, 440, 50, str(passward_size))            
 
 
 def callback(channel):
@@ -116,7 +134,7 @@ def callback(channel):
  
 
 
-GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
+#GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
 
 def setServoPos(deg):
     if deg > 180:
@@ -145,7 +163,7 @@ Buttonphoto = button((0,255,0), 40, 230, 400, 180,'check')
 Buttonrepassword = button((0,255,0), 40, 440, 400, 180,'Fix Password')
 
 def lock():
-    setServoPos(90)
+    setServoPos(120)
     sleep(0.5)
     GPIO.output(ForwardPin,GPIO.HIGH)
     GPIO.output(ReversePin,GPIO.LOW)
@@ -154,8 +172,9 @@ def lock():
     servo.start(0)
 
 def Fix_password():
+    global chackpassword 
     password = ""
-   
+    
     lock_screen()
 
     while 1: 
@@ -170,31 +189,44 @@ def Fix_password():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button0.isOver(pos):
                     password += str(sampleNumber[0])
+                    refrash_screen()
                 elif Button1.isOver(pos):
                     password += str(sampleNumber[1])
+                    refrash_screen()
                 elif Button2.isOver(pos):
                     password += str(sampleNumber[2])
+                    refrash_screen()
                 elif Button3.isOver(pos):
                     password += str(sampleNumber[3])
+                    refrash_screen()
                 elif Button4.isOver(pos):
                     password += str(sampleNumber[4])
+                    refrash_screen()
                 elif Button5.isOver(pos):
                     password += str(sampleNumber[5])
+                    refrash_screen()
                 elif Button6.isOver(pos):
                     password += str(sampleNumber[6])
+                    refrash_screen()
                 elif Button7.isOver(pos):
                     password += str(sampleNumber[7])
+                    refrash_screen()
                 elif Button8.isOver(pos):
                     password += str(sampleNumber[8])
+                    refrash_screen()
                 elif Button9.isOver(pos):
                     password += str(sampleNumber[9])
+                    refrash_screen()
                 elif Buttonst.isOver(pos):
                     password = ""
+                    lock_screen()
                 elif Buttonsh.isOver(pos):
                     f = open("password.txt", "wt")
                     f.seek(0)
                     f.write(str(password))
-                    f.close()
+                    chackpassword = password
+
+
                     return
                 
 def chack_intruder():
@@ -237,30 +269,12 @@ def unlock_screen():
                     lock_screen()
         if return_flag == True:
             return
-def lock_screen():
-    global Button0
-    global Button1
-    global Button2
-    global Button3
-    global Button4
-    global Button5
-    global Button6
-    global Button7
-    global Button8
-    global Button9
-    global sampleNumber
-    
-    sampleNumber = random.sample(num, 10)
-    Button0 = button((0,255,0), 20, 20, 120, 120,str(sampleNumber[0]))
-    Button1 = button((0,255,0), 180, 20, 120, 120,str(sampleNumber[1]))
-    Button2 = button((0,255,0), 340, 20, 120, 120,str(sampleNumber[2]))
-    Button3 = button((0,255,0), 20, 170, 120, 120,str(sampleNumber[3]))
-    Button4 = button((0,255,0), 180, 170, 120, 120,str(sampleNumber[4]))
-    Button5 = button((0,255,0), 340, 170, 120, 120,str(sampleNumber[5]))
-    Button6 = button((0,255,0), 20, 320, 120, 120,str(sampleNumber[6]))
-    Button7 = button((0,255,0), 180, 320, 120, 120,str(sampleNumber[7]))
-    Button8 = button((0,255,0), 340, 320, 120, 120,str(sampleNumber[8]))
-    Button9 = button((0,255,0), 180, 470, 120, 120,str(sampleNumber[9]))
+
+def refrash_screen():
+    global passward_size
+   
+    passward_size +='*'
+    Passward_box = passward_box((0,0,0), 20, 20, 440, 50,str(passward_size))
 
     win.fill((255,255,255))
 
@@ -276,9 +290,60 @@ def lock_screen():
     Button9.draw(win)
     Buttonst.draw(win)
     Buttonsh.draw(win)
+    Passward_box.draw(win)
     pygame.display.update()
 
 
+def lock_screen():
+    global Button0
+    global Button1
+    global Button2
+    global Button3
+    global Button4
+    global Button5
+    global Button6
+    global Button7
+    global Button8
+    global Button9
+    global Passward_box
+    global passward_size
+    global sampleNumber
+
+    passward_size = ""
+    
+    sampleNumber = random.sample(num, 10)
+    Button0 = button((0,255,0), 20, 90, 120, 100,str(sampleNumber[0]))
+    Button1 = button((0,255,0), 180, 90, 120, 100,str(sampleNumber[1]))
+    Button2 = button((0,255,0), 340, 90, 120, 100,str(sampleNumber[2]))
+    Button3 = button((0,255,0), 20, 210, 120, 100,str(sampleNumber[3]))
+    Button4 = button((0,255,0), 180, 210, 120, 100,str(sampleNumber[4]))
+    Button5 = button((0,255,0), 340, 210, 120, 100,str(sampleNumber[5]))
+    Button6 = button((0,255,0), 20, 330, 120, 100,str(sampleNumber[6]))
+    Button7 = button((0,255,0), 180, 330, 120, 100,str(sampleNumber[7]))
+    Button8 = button((0,255,0), 340, 330, 120, 100,str(sampleNumber[8]))
+    Button9 = button((0,255,0), 180, 450, 120, 100,str(sampleNumber[9]))
+
+    Passward_box = passward_box((0,0,0), 20, 20, 440, 50, str(passward_size))
+
+    win.fill((255,255,255))
+
+    Button0.draw(win)
+    Button1.draw(win)
+    Button2.draw(win)
+    Button3.draw(win)
+    Button4.draw(win)
+    Button5.draw(win)
+    Button6.draw(win)
+    Button7.draw(win)
+    Button8.draw(win)
+    Button9.draw(win)
+    Buttonst.draw(win)
+    Buttonsh.draw(win)
+    Passward_box.draw(win)
+    pygame.display.update()
+
+run = True
+lock_screen()
 while 1:
     
     if run == True:
@@ -294,26 +359,37 @@ while 1:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if Button0.isOver(pos):
                     password += str(sampleNumber[0])
+                    refrash_screen()
                 elif Button1.isOver(pos):
                     password += str(sampleNumber[1])
+                    refrash_screen()
                 elif Button2.isOver(pos):
                     password += str(sampleNumber[2])
+                    refrash_screen()
                 elif Button3.isOver(pos):
                     password += str(sampleNumber[3])
+                    refrash_screen()
                 elif Button4.isOver(pos):
                     password += str(sampleNumber[4])
+                    refrash_screen()
                 elif Button5.isOver(pos):
                     password += str(sampleNumber[5])
+                    refrash_screen()
                 elif Button6.isOver(pos):
                     password += str(sampleNumber[6])
+                    refrash_screen()
                 elif Button7.isOver(pos):
                     password += str(sampleNumber[7])
+                    refrash_screen()
                 elif Button8.isOver(pos):
                     password += str(sampleNumber[8])
+                    refrash_screen()
                 elif Button9.isOver(pos):
                     password += str(sampleNumber[9])
+                    refrash_screen()
                 elif Buttonst.isOver(pos):
                     password = ""
+                    lock_screen()
                 elif Buttonsh.isOver(pos):
                     print(password)
                     print(chackpassword)
@@ -335,6 +411,7 @@ while 1:
                         print("false")
                         camera.capture('./intruder.jpg')
                         password = ""
+                        lock_screen()
     else:
         if servo_flag == True:
             lock()
