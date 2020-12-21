@@ -63,7 +63,7 @@ class button():
             
         return False
 
-class passward_box():
+class password_box():
     def __init__(self, color, x,y,width,height, text=''):
         self.color = color
         self.x = x
@@ -92,7 +92,7 @@ class Intruder(object):
     def draw(self):
         win.blit(self.image, (self.x, self.y))
 
-passward_size = ""
+password_size = ""
 
 num = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -111,7 +111,7 @@ Button9 = button((0,255,0), 180, 450, 120, 100,str(sampleNumber[9]))
 Buttonst = button((0,255,0), 20, 450, 120, 100, '*')
 Buttonsh = button((0,255,0), 340, 450, 120, 100, '#')
 
-Passward_box = passward_box((0,0,0), 20, 20, 440, 50, str(passward_size))            
+Password_box = password_box((0,0,0), 20, 20, 440, 50, str(password_size))            
 
 
 def callback(channel):
@@ -134,7 +134,7 @@ def callback(channel):
  
 
 
-#GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
+GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
 
 def setServoPos(deg):
     if deg > 180:
@@ -271,10 +271,10 @@ def unlock_screen():
             return
 
 def refrash_screen():
-    global passward_size
+    global password_size
    
-    passward_size +='*'
-    Passward_box = passward_box((0,0,0), 20, 20, 440, 50,str(passward_size))
+    password_size +='*'
+    Passward_box = password_box((0,0,0), 20, 20, 440, 50,str(password_size))
 
     win.fill((255,255,255))
 
@@ -306,10 +306,12 @@ def lock_screen():
     global Button8
     global Button9
     global Passward_box
-    global passward_size
+    global password
+    global password_size
     global sampleNumber
 
-    passward_size = ""
+    password_size = ""
+    password = ""
     
     sampleNumber = random.sample(num, 10)
     Button0 = button((0,255,0), 20, 90, 120, 100,str(sampleNumber[0]))
@@ -323,7 +325,8 @@ def lock_screen():
     Button8 = button((0,255,0), 340, 330, 120, 100,str(sampleNumber[8]))
     Button9 = button((0,255,0), 180, 450, 120, 100,str(sampleNumber[9]))
 
-    Passward_box = passward_box((0,0,0), 20, 20, 440, 50, str(passward_size))
+    Passward_box = password_box((0,0,0), 20, 20, 440, 50, str(password_size))
+
 
     win.fill((255,255,255))
 
@@ -387,8 +390,7 @@ while 1:
                 elif Button9.isOver(pos):
                     password += str(sampleNumber[9])
                     refrash_screen()
-                elif Buttonst.isOver(pos):
-                    password = ""
+                elif Buttonst.isOver(pos):  
                     lock_screen()
                 elif Buttonsh.isOver(pos):
                     print(password)
@@ -398,19 +400,17 @@ while 1:
                         print("false")
                     elif int(password) == int(chackpassword):
                         print("true")
-                        password = ""
                         GPIO.output(ForwardPin,GPIO.LOW)
                         GPIO.output(ReversePin,GPIO.HIGH)
                         sleep(3)
                         GPIO.output(ReversePin,GPIO.LOW)
                         setServoPos(0)
-                        unlock_screen()
                         sleep(0.5)
                         servo.start(0)
+                        unlock_screen()
                     else :
                         print("false")
                         camera.capture('./intruder.jpg')
-                        password = ""
                         lock_screen()
     else:
         if servo_flag == True:
