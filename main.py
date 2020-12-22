@@ -81,16 +81,26 @@ class password_box():
             font = pygame.font.SysFont('comicsans', 60)
             text = font.render(self.text, 1, (0,0,0))
             win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
-
-
+    
 class Intruder(object):
     def __init__(self):
         self.x = 0
         self.y = 0
+        self.width = 480
+        self.height = 640
         self.image = pygame.image.load("intruder.jpg").convert_alpha()
 
     def draw(self):
         win.blit(self.image, (self.x, self.y))
+    
+    def isOver(self, pos):
+        #Pos is the mouse position or a tuple of (x,y) coordinates
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+            
+        return False
+
 
 password_size = ""
 
@@ -134,7 +144,7 @@ def callback(channel):
  
 
 
-GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
+#GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
 
 def setServoPos(deg):
     if deg > 180:
@@ -233,9 +243,22 @@ def chack_intruder():
     intruder = Intruder()
     win.fill((255, 255, 255))
     intruder.draw()
-
     pygame.display.update()
 
+    while 1:
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
+
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                return_flag = True
+                if intruder.isOver(pos):
+                    return
+                    
 
 def unlock_screen():
     global return_flag
@@ -263,6 +286,8 @@ def unlock_screen():
         
                 elif Buttonphoto.isOver(pos):
                     chack_intruder()
+                    
+                    unlock_screen()
                 elif Buttonrepassword.isOver(pos):
                     Fix_password()
                     lock()
