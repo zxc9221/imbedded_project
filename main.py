@@ -130,11 +130,9 @@ def callback(channel):
     global servo_flag
     
     if GPIO.input(SensorPin):
-        print("20 Rising")
         run = True
         lock_screen()    
     else:
-        print("20 Falling")
         run = False
         servo_flag = True
         return_flag = True
@@ -144,7 +142,7 @@ def callback(channel):
  
 
 
-#GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
+GPIO.add_event_detect(SensorPin, GPIO.BOTH, callback=callback)
 
 def setServoPos(deg):
     if deg > 180:
@@ -154,7 +152,6 @@ def setServoPos(deg):
 
     duty = SERVO_MIN_DUTY + (deg * (SERVO_MAX_DUTY - SERVO_MIN_DUTY)/180.0)
 
-    print("Degree: {} to {}".format(deg, duty))
 
     servo.ChangeDutyCycle(duty)
 
@@ -168,9 +165,9 @@ f.close()
 win = pygame.display.set_mode((480,640))
 win.fill((255,255,255))
 
-Buttonlock = button((0,255,0), 40, 20, 400, 180,'Lock')
-Buttonphoto = button((0,255,0), 40, 230, 400, 180,'check')
-Buttonrepassword = button((0,255,0), 40, 440, 400, 180,'Fix Password')
+Buttonlock = button((0,255,0), 40, 20, 400, 170,'Lock')
+Buttonphoto = button((0,255,0), 40, 220, 400, 170,'check')
+Buttonrepassword = button((0,255,0), 40, 420, 400, 170,'Fix Password')
 
 def lock():
     setServoPos(120)
@@ -180,6 +177,7 @@ def lock():
     sleep(1)
     GPIO.output(ForwardPin,GPIO.LOW)
     servo.start(0)
+    lock_screen()
 
 def Fix_password():
     global chackpassword 
@@ -418,13 +416,12 @@ while 1:
                 elif Buttonst.isOver(pos):  
                     lock_screen()
                 elif Buttonsh.isOver(pos):
-                    print(password)
-                    print(chackpassword)
+                    #print(password)
+                    #print(chackpassword)
                     
                     if password == "":
-                        print("false")
+                        continue
                     elif int(password) == int(chackpassword):
-                        print("true")
                         GPIO.output(ForwardPin,GPIO.LOW)
                         GPIO.output(ReversePin,GPIO.HIGH)
                         sleep(3)
@@ -434,7 +431,6 @@ while 1:
                         servo.start(0)
                         unlock_screen()
                     else :
-                        print("false")
                         camera.capture('./intruder.jpg')
                         lock_screen()
     else:
